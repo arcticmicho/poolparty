@@ -18,8 +18,10 @@ public class PoolPartyManagerEditor : Editor {
     private bool m_newIncremental;
     private string m_resultMessage = string.Empty;
 
-    private GUIStyle gsAlterQuest = null;
+    public Vector2 scrollPosition = Vector2.zero;
+
     private GUIStyle labelStyle = null;
+    private GUIStyle labelStyleAddPool = null;
     
     public void Awake()
     {
@@ -30,18 +32,20 @@ public class PoolPartyManagerEditor : Editor {
     {
         if(!Application.isPlaying){
 
-            if(gsAlterQuest == null)
-            {
-                gsAlterQuest = new GUIStyle();
-                gsAlterQuest.normal.background = MakeTex(600, 100, Color.green);
-            }
-
             if(labelStyle == null)
             {
-                labelStyle = new GUIStyle();
-                labelStyle.fontSize = 16;
+                labelStyle = new GUIStyle(GUI.skin.GetStyle("flow var 3"));
+                labelStyle.fontSize = 10;
             }
-            EditorGUILayout.LabelField("Registred Pools", labelStyle, GUILayout.Height(18));
+            if(labelStyleAddPool == null)
+            {
+                labelStyleAddPool = new GUIStyle(GUI.skin.GetStyle("flow var 1"));
+                labelStyleAddPool.fontSize = 10;
+                labelStyleAddPool.fontStyle = FontStyle.Bold;
+            }
+            GUILayout.BeginHorizontal(labelStyleAddPool);
+            GUILayout.Label("Registred Pools");//, GUILayout.Height(18));
+            GUILayout.EndHorizontal();
             GUILayout.Box("Add a Pool", new GUILayoutOption[] { GUILayout.ExpandWidth(true), GUILayout.Height(1) });
 
             
@@ -51,13 +55,13 @@ public class PoolPartyManagerEditor : Editor {
             }
 
             //EditorGUILayout.BeginHorizontal();
-
             if (reference.Keys != null && reference.Values != null)
             {
                 foreach (string key in reference.Keys)
                 {
                     int index = reference.Keys.IndexOf(key);
                     PoolObject pool = reference.Values[index];
+                    GUILayout.BeginVertical();
                     EditorGUILayout.LabelField("Pool name: ", pool.PoolName);
                     EditorGUILayout.ObjectField("Game object: ", pool.PoolableObject, typeof(GameObject), false);
                     EditorGUILayout.IntField("Initial count: ", pool.InitialCount);
@@ -69,6 +73,8 @@ public class PoolPartyManagerEditor : Editor {
                         bool result = RemovePool(pool);
                         break;
                     }
+                    GUILayout.EndVertical();
+                    GUILayout.Box("Add a Pool", new GUILayoutOption[] { GUILayout.ExpandWidth(true), GUILayout.Height(1) });
                     EditorGUILayout.Space();
                 } 
             }
@@ -76,16 +82,20 @@ public class PoolPartyManagerEditor : Editor {
             EditorGUILayout.Space();
             EditorGUILayout.Space();
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Add a Pool: ", labelStyle, GUILayout.Height(18));
+            GUILayout.BeginHorizontal(labelStyle);
+            EditorGUILayout.LabelField("Add a Pool: ");//labelStyle, GUILayout.Height(18));
+            GUILayout.EndHorizontal();
             GUILayout.Box("Add a Pool", new GUILayoutOption[] { GUILayout.ExpandWidth(true), GUILayout.Height(1) });
-            GUILayout.BeginVertical();//gsAlterQuest);
+
+            GUILayout.BeginVertical();
             m_newPoolName = EditorGUILayout.TextField("Pool name: ", m_newPoolName);
-            m_newGameObject = EditorGUILayout.ObjectField("GameObject: ", m_newGameObject, typeof(GameObject), false);
+            m_newGameObject = EditorGUILayout.ObjectField("GameObje ct: ", m_newGameObject, typeof(GameObject), false);
             m_newInitialCount = EditorGUILayout.IntField("Initial count: ", m_newInitialCount);
             m_newIncremental = EditorGUILayout.Toggle("Incremental: ", m_newIncremental);
             if(GUILayout.Button("Add Pool"))
             {
                 m_resultMessage = AddPoolToPoolManager(reference);
+                UpdatePoolObjectsType();
             }
             GUILayout.EndVertical();
             EditorGUILayout.Space();
@@ -94,7 +104,7 @@ public class PoolPartyManagerEditor : Editor {
         {
             EditorGUILayout.HelpBox("PoolPartyManager can't be edited when the game is running", MessageType.Info);
         }
-    }
+    }    
 
     private string AddPoolToPoolManager(PoolPartyManager poolManager)
     {
@@ -151,6 +161,11 @@ public class PoolPartyManagerEditor : Editor {
         m_newGameObject = null;
         m_newInitialCount = 0;
         m_newIncremental = false;
+    }
+
+    private void UpdatePoolObjectsType()
+    {
+        EnumWriterTool.WriteEnumToFile("Assets/02_Scripts/EPoolObjectType.cs", reference.Keys.ToArray(), "EPoolObjectType");
     }
 
     private Texture2D MakeTex(int width, int height, Color col)
