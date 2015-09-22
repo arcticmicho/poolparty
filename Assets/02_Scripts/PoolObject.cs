@@ -102,6 +102,7 @@ public class PoolObject : MonoBehaviour {
             obj.transform.parent = gameObject.transform;
             obj.SetActive(false);
             m_activeObjects.Add(obj);
+            Debug.LogWarning("Creating another instance of the object!");
             return obj;
         }else
         {
