@@ -23,6 +23,8 @@ public class EnumWriterTool {
             StreamWriter enumWriter = new StreamWriter(enumFile);
             enumWriter.Write(builder.ToString());
             enumWriter.Flush();
+            enumWriter.Close();
+            enumFile.Close();
         }
         catch (System.Exception e)
         {            
