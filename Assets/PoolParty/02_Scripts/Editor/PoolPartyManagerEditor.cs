@@ -165,7 +165,7 @@ public class PoolPartyManagerEditor : Editor {
 
     private void UpdatePoolObjectsType()
     {
-        EnumWriterTool.WriteEnumToFile("Assets/02_Scripts/EPoolObjectType.cs", reference.Keys.ToArray(), "EPoolObjectType");
+        EnumWriterTool.WriteEnumToFile("Assets/PoolParty/02_Scripts/EPoolObjectType.cs", reference.Keys.ToArray(), "EPoolObjectType");
     }
 
     private Texture2D MakeTex(int width, int height, Color col)

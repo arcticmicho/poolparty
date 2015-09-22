@@ -43,10 +43,10 @@ public class PoolPartyManager : MonoBehaviour {
         get { return m_values; }
     }
 
-	void Start () 
+    void Awake()
     {
-	
-	}
+        DontDestroyOnLoad(gameObject);
+    }
 
     public GameObject GetPoolableObject(EPoolObjectType key)
     {
