@@ -5,6 +5,7 @@ using System.IO;
 
 public class PoolPartyManager : MonoBehaviour {
 
+
     private static PoolPartyManager m_instance;
     public static PoolPartyManager Instance
     {
@@ -47,11 +48,11 @@ public class PoolPartyManager : MonoBehaviour {
 	
 	}
 
-    public GameObject GetPoolableObject(string key)
+    public GameObject GetPoolableObject(EPoolObjectType key)
     {
-        if (m_keys.Contains(key))
+        if (m_keys.Contains(key.ToString()))
         {
-            int index = m_keys.IndexOf(key);
+            int index = m_keys.IndexOf(key.ToString());
             return m_values[index].GetPoolObject();
         }else
         {
@@ -60,11 +61,11 @@ public class PoolPartyManager : MonoBehaviour {
         }
     }
 
-    public void ReturnToPool(string key, GameObject obj)
+    public void ReturnToPool(EPoolObjectType key, GameObject obj)
     {
-        if (m_keys.Contains(key))
+        if (m_keys.Contains(key.ToString()))
         {
-            int index = m_keys.IndexOf(key);
+            int index = m_keys.IndexOf(key.ToString());
             PoolObject pool = m_values[index];
             bool succes = pool.ReturnToPool(obj);
             if(!succes)

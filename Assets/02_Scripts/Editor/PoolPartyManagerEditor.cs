@@ -89,7 +89,7 @@ public class PoolPartyManagerEditor : Editor {
 
             GUILayout.BeginVertical();
             m_newPoolName = EditorGUILayout.TextField("Pool name: ", m_newPoolName);
-            m_newGameObject = EditorGUILayout.ObjectField("GameObje ct: ", m_newGameObject, typeof(GameObject), false);
+            m_newGameObject = EditorGUILayout.ObjectField("GameObject: ", m_newGameObject, typeof(GameObject), false);
             m_newInitialCount = EditorGUILayout.IntField("Initial count: ", m_newInitialCount);
             m_newIncremental = EditorGUILayout.Toggle("Incremental: ", m_newIncremental);
             if(GUILayout.Button("Add Pool"))

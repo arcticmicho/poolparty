@@ -8,7 +8,8 @@ public class ExampleBehaviours : MonoBehaviour {
 
     public GameObject m_currenPoolableObject;
     public Text m_resultText;
-    public string m_key;
+    public EPoolObjectType m_key;
+    private EPoolObjectType m_currentObjectKey;
 
 	public void OnAskForPoolObject()
     {
@@ -23,6 +24,7 @@ public class ExampleBehaviours : MonoBehaviour {
                 m_resultText.text = "Game object found!";
                 m_currenPoolableObject.transform.SetParent(transform, false);
                 m_currenPoolableObject.SetActive(true);
+                m_currentObjectKey = m_key;
             }            
         }else
         {
@@ -35,7 +37,7 @@ public class ExampleBehaviours : MonoBehaviour {
     {
         if(m_currenPoolableObject != null)
         {
-            PoolPartyManager.Instance.ReturnToPool(m_key, m_currenPoolableObject);
+            PoolPartyManager.Instance.ReturnToPool(m_currentObjectKey, m_currenPoolableObject);
             m_currenPoolableObject = null;
             m_resultText.text = "Object returned!";
         }else
