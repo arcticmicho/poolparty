@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using System.Text;
+using UnityEditor;
 
 public class EnumWriterTool {
 
@@ -25,6 +26,7 @@ public class EnumWriterTool {
             enumWriter.Flush();
             enumWriter.Close();
             enumFile.Close();
+            AssetDatabase.Refresh();
         }
         catch (System.Exception e)
         {            

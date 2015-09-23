@@ -95,7 +95,7 @@ public class PoolPartyManagerEditor : Editor {
             if(GUILayout.Button("Add Pool"))
             {
                 m_resultMessage = AddPoolToPoolManager(reference);
-                UpdatePoolObjectsType();
+                
             }
             GUILayout.EndVertical();
             EditorGUILayout.Space();
@@ -124,7 +124,16 @@ public class PoolPartyManagerEditor : Editor {
 
                     poolManager.AddPool(pool);
                     ResetNewPoolValues();
-                    return "Success!";
+                    bool result = UpdatePoolObjectsType();
+                    if(result)
+                    {
+                        return "Success!";
+                    }else
+                    {
+                        return "Error trying to write the Enum file, please verify that you have the permission to write over this file and try again.";
+                    }
+
+                    
                 }else
                 {
                     return "Pool name can't be null or empty";
@@ -151,6 +160,8 @@ public class PoolPartyManagerEditor : Editor {
             {
                 DestroyImmediate(transform.gameObject);
             }
+            result &= UpdatePoolObjectsType();
+
         }
         return result;
     }
@@ -163,9 +174,9 @@ public class PoolPartyManagerEditor : Editor {
         m_newIncremental = false;
     }
 
-    private void UpdatePoolObjectsType()
+    private bool UpdatePoolObjectsType()
     {
-        EnumWriterTool.WriteEnumToFile("Assets/PoolParty/02_Scripts/EPoolObjectType.cs", reference.Keys.ToArray(), "EPoolObjectType");
+        return EnumWriterTool.WriteEnumToFile("Assets/PoolParty/02_Scripts/EPoolObjectType.cs", reference.Keys.ToArray(), "EPoolObjectType");
     }
 
     private Texture2D MakeTex(int width, int height, Color col)
