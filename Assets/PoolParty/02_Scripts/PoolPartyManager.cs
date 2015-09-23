@@ -50,28 +50,33 @@ public class PoolPartyManager : MonoBehaviour {
 
     public GameObject GetPoolableObject(EPoolObjectType key)
     {
-        if (m_keys.Contains(key.ToString()))
+        try
         {
-            int index = m_keys.IndexOf(key.ToString());
-            return m_values[index].GetPoolObject();
-        }else
+            return m_values[(int)key].GetPoolObject();
+        }
+        catch (System.Exception)
         {
-            Debug.LogError("Couldn't find a pool with key: " + key);
+            Debug.LogError("Couldn't find a pool with key: " + key + ". Is you EPoolObjectType updated?");
             return null;
         }
+        
     }
 
     public void ReturnToPool(EPoolObjectType key, GameObject obj)
     {
-        if (m_keys.Contains(key.ToString()))
+        try
         {
-            int index = m_keys.IndexOf(key.ToString());
-            PoolObject pool = m_values[index];
+            PoolObject pool = m_values[(int)key];
             bool succes = pool.ReturnToPool(obj);
-            if(!succes)
+            if (!succes)
             {
                 Debug.LogError("Trying to return a gameObject to a pool that doesn't belong. Are you using the right key? or is the gameObject a poolable object?");
             }
+        }
+        catch (System.Exception)
+        {
+
+            Debug.LogError("Pool not found with key " + key.ToString() + ". Is your EPoolObjectType updated?");
         }
     }
 
