@@ -3,6 +3,19 @@ using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
 
+
+public struct ResultMessage
+{
+    public string m_resultMessage;
+    public bool m_isError;
+    
+    public ResultMessage(string message, bool isError)
+    {
+        m_resultMessage = message;
+        m_isError = isError;
+    }
+}
+
 [CustomEditor(typeof(PoolPartyManager))]
 [CanEditMultipleObjects]
 public class PoolPartyManagerEditor : Editor {
@@ -16,12 +29,13 @@ public class PoolPartyManagerEditor : Editor {
     private Object m_newGameObject;
     private int m_newInitialCount;
     private bool m_newIncremental;
-    private string m_resultMessage = string.Empty;
+    private ResultMessage m_result;
 
     public Vector2 scrollPosition = Vector2.zero;
 
     private GUIStyle labelStyle = null;
     private GUIStyle labelStyleAddPool = null;
+    private GUIStyle resultLabelStyle = null;
     
     public void Awake()
     {
@@ -43,8 +57,12 @@ public class PoolPartyManagerEditor : Editor {
                 labelStyleAddPool.fontSize = 10;
                 labelStyleAddPool.fontStyle = FontStyle.Bold;
             }
+            if(resultLabelStyle == null)
+            {
+                resultLabelStyle = new GUIStyle();
+            }
             GUILayout.BeginHorizontal(labelStyleAddPool);
-            GUILayout.Label("Registred Pools");//, GUILayout.Height(18));
+            GUILayout.Label("Registred Pools");
             GUILayout.EndHorizontal();
             GUILayout.Box("Add a Pool", new GUILayoutOption[] { GUILayout.ExpandWidth(true), GUILayout.Height(1) });
 
@@ -54,7 +72,6 @@ public class PoolPartyManagerEditor : Editor {
                 reference = (PoolPartyManager) target;
             }
 
-            //EditorGUILayout.BeginHorizontal();
             if (reference.Keys != null && reference.Values != null)
             {
                 foreach (string key in reference.Keys)
@@ -83,7 +100,7 @@ public class PoolPartyManagerEditor : Editor {
             EditorGUILayout.Space();
             EditorGUILayout.Space();
             GUILayout.BeginHorizontal(labelStyle);
-            EditorGUILayout.LabelField("Add a Pool: ");//labelStyle, GUILayout.Height(18));
+            EditorGUILayout.LabelField("Add a Pool: ");
             GUILayout.EndHorizontal();
             GUILayout.Box("Add a Pool", new GUILayoutOption[] { GUILayout.ExpandWidth(true), GUILayout.Height(1) });
 
@@ -94,19 +111,27 @@ public class PoolPartyManagerEditor : Editor {
             m_newIncremental = EditorGUILayout.Toggle("Incremental: ", m_newIncremental);
             if(GUILayout.Button("Add Pool"))
             {
-                m_resultMessage = AddPoolToPoolManager(reference);
+                m_result = AddPoolToPoolManager(reference);
                 
             }
             GUILayout.EndVertical();
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField(m_resultMessage);
+
+            if(m_result.m_isError)
+            {
+                resultLabelStyle.normal.textColor = Color.red;
+            }else
+            {
+                resultLabelStyle.normal.textColor = Color.green;
+            }
+            EditorGUILayout.LabelField(m_result.m_resultMessage, resultLabelStyle);
         }else
         {
             EditorGUILayout.HelpBox("PoolPartyManager can't be edited when the game is running", MessageType.Info);
         }
-    }    
+    }
 
-    private string AddPoolToPoolManager(PoolPartyManager poolManager)
+    private ResultMessage AddPoolToPoolManager(PoolPartyManager poolManager)
     {
         if(!poolManager.Keys.Contains(m_newPoolName))
         {
@@ -127,26 +152,26 @@ public class PoolPartyManagerEditor : Editor {
                     bool result = UpdatePoolObjectsType();
                     if(result)
                     {
-                        return "Success!";
+                        return new ResultMessage("Success!",false);
                     }else
                     {
-                        return "Error trying to write the Enum file, please verify that you have the permission to write over this file and try again.";
+                        return new ResultMessage("Error trying to write the Enum file, please verify that you have the permission to write over this file and try again.",true);
                     }
 
                     
                 }else
                 {
-                    return "Pool name can't be null or empty";
+                    return new ResultMessage("Pool name can't be null or empty",true);
                 }
 
                 
             }else
             {
-                return "GameObject can't be null";
+                return new ResultMessage("GameObject can't be null",true);
             }
         }else
         {
-            return "Key already exist";
+            return new ResultMessage("Key already exist",true);
         }
     }
 

@@ -17,7 +17,7 @@ public class EnumWriterTool {
             builder.Append("{ \n");
             for(int i=0; i<enumKeys.Length; i++)
             {
-                builder.Append(string.Format("{0} = {1}, \n", enumKeys[i], i));
+                builder.Append(string.Format("\t{0} = {1}, \n", enumKeys[i], i));
             }
             builder.Append("} \n");
 
@@ -27,11 +27,13 @@ public class EnumWriterTool {
             enumWriter.Close();
             enumFile.Close();
             AssetDatabase.Refresh();
+            return true;
         }
         catch (System.Exception e)
-        {            
-            throw e;
+        {
+            Debug.LogError(e);
+            return false;
         }
-        return false;
+        
     }
 }

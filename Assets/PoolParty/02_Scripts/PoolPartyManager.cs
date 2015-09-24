@@ -5,7 +5,6 @@ using System.IO;
 
 public class PoolPartyManager : MonoBehaviour {
 
-
     private static PoolPartyManager m_instance;
     public static PoolPartyManager Instance
     {
@@ -25,9 +24,7 @@ public class PoolPartyManager : MonoBehaviour {
 
             return m_instance;
         }
-    }
-
- 
+    } 
 
     [SerializeField]
     private List<string> m_keys = new List<string>();
